@@ -1,0 +1,223 @@
+{
+    "Barbarian": {
+        "title": "Barbarian",
+        "_class_description": "A master of rage.",
+        "hit_die": "d12",
+        "skill_points": 2,
+        "proficiencies": [
+            "Light Armor",
+            "Medium Armor",
+            "Shields",
+            "Simple Weapons",
+            "Martial Weapons"
+        ],
+        "special_ability": "Rage",
+        "starting_equipment": [
+            "Greataxe",
+            "Loincloth"
+        ]
+    },
+    "Bard": {
+        "title": "Bard",
+        "_class_description": "A master of lore.",
+        "hit_die": "d8",
+        "skill_points": 4,
+        "proficiencies": [
+            "Light Armor",
+            "Simple Weapons",
+            "Hand Crossbows",
+            "Longswords",
+            "Rapiers",
+            "Shortswords"
+        ],
+        "special_ability": "Bardic Inspiration",
+        "starting_equipment": [
+            "Rapier",
+            "Lute"
+        ]
+    },
+    "Cleric": {
+        "title": "Cleric",
+        "_class_description": "A master of worship.",
+        "hit_die": "d8",
+        "skill_points": 2,
+        "proficiencies": [
+            "Light Armor",
+            "Medium Armor",
+            "Shields",
+            "Simple Weapons"
+        ],
+        "special_ability": "Divine Domain",
+        "starting_equipment": [
+            "Mace",
+            "Chain Mail"
+        ]
+    },
+    "Druid": {
+        "title": "Druid",
+        "_class_description": "A master of nature.",
+        "hit_die": "d8",
+        "skill_points": 4,
+        "proficiencies": [
+            "Light Armor",
+            "Medium Armor",
+            "Shields",
+            "Clubs",
+            "Daggers",
+            "Darts",
+            "Javelins",
+            "Maces",
+            "Quarterstaffs",
+            "Scimitars",
+            "Sickles",
+            "Slings",
+            "Spears"
+        ],
+        "special_ability": "Druidic",
+        "starting_equipment": [
+            "Wooden Shield",
+            "Scimitar"
+        ]
+    },
+    "Fighter": {
+        "title": "Fighter",
+        "_class_description": "A master of arms.",
+        "hit_die": "d10",
+        "skill_points": 4,
+        "proficiencies": [
+            "Light Armor",
+            "Medium Armor",
+            "Heavy Armor",
+            "Shields",
+            "Simple Weapons",
+            "Martial Weapons"
+        ],
+        "special_ability": "Fighting Style",
+        "starting_equipment": [
+            "Chain Mail",
+            "Longsword"
+        ]
+    },
+    "Monk": {
+        "title": "Monk",
+        "_class_description": "A master of discipline.",
+        "hit_die": "d8",
+        "skill_points": 4,
+        "proficiencies": [
+            "Simple Weapons",
+            "Shortswords"
+        ],
+        "special_ability": "Unarmored Defense",
+        "starting_equipment": [
+            "Shortsword",
+            "Dungeoneer's Pack"
+        ]
+    },
+    "Paladin": {
+        "title": "Paladin",
+        "_class_description": "A master of resolve.",
+        "hit_die": "d10",
+        "skill_points": 2,
+        "proficiencies": [
+            "Light Armor",
+            "Medium Armor",
+            "Heavy Armor",
+            "Shields",
+            "Simple Weapons",
+            "Martial Weapons"
+        ],
+        "special_ability": "Divine Sense",
+        "starting_equipment": [
+            "Chain Mail",
+            "Longsword"
+        ]
+    },
+    "Ranger": {
+        "title": "Ranger",
+        "_class_description": "A master of sight.",
+        "hit_die": "d10",
+        "skill_points": 4,
+        "proficiencies": [
+            "Light Armor",
+            "Medium Armor",
+            "Shields",
+            "Simple Weapons",
+            "Martial Weapons"
+        ],
+        "special_ability": "Favored Enemy",
+        "starting_equipment": [
+            "Scale Mail",
+            "Longbow"
+        ]
+    },
+    "Rogue": {
+        "title": "Rogue",
+        "_class_description": "A master of shadow.",
+        "hit_die": "d8",
+        "skill_points": 4,
+        "proficiencies": [
+            "Light Armor",
+            "Simple Weapons",
+            "Hand Crossbows",
+            "Longswords",
+            "Rapiers",
+            "Shortswords"
+        ],
+        "special_ability": "Expertise",
+        "starting_equipment": [
+            "Rapier",
+            "Dungeoneer's Pack"
+        ]
+    },
+    "Sorcerer": {
+        "title": "Sorcerer",
+        "_class_description": "A master of mind.",
+        "hit_die": "d8",
+        "skill_points": 4,
+        "proficiencies": [
+            "Daggers",
+            "Darts",
+            "Slings",
+            "Quarterstaffs",
+            "Light Crossbows"
+        ],
+        "special_ability": "Sorcerous Origin",
+        "starting_equipment": [
+            "Crossbow, Light",
+            "Component Pouch"
+        ]
+    },
+    "Warlock": {
+        "title": "Warlock",
+        "_class_description": "A master of darkness.",
+        "hit_die": "d8",
+        "skill_points": 4,
+        "proficiencies": [
+            "Light Armor",
+            "Simple Weapons"
+        ],
+        "special_ability": "Otherworldly Patron",
+        "starting_equipment": [
+            "Crossbow, Light",
+            "Component Pouch"
+        ]
+    },
+    "Wizard": {
+        "title": "Wizard",
+        "_class_description": "A master of magic.",
+        "hit_die": "d6",
+        "skill_points": 4,
+        "proficiencies": [
+            "Daggers",
+            "Darts",
+            "Slings",
+            "Quarterstaffs",
+            "Light Crossbows"
+        ],
+        "special_ability": "Arcane Recovery",
+        "starting_equipment": [
+            "Quarterstaff",
+            "Component Pouch"
+        ]
+    }
+}

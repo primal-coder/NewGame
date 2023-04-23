@@ -1,0 +1,226 @@
+{
+    "Lightfoot Halfling": {
+        "title": "Lightfoot Halfling",
+        "description": "Lightfoot halflings are known for their cunning and deftness. They tend to be more outgoing andadventurous than their stouter cousins and are often found in the raucous company of bards, rogues, and other adventurers. Lightfoot halflings are also known for their talent as musicians and storytellers.",
+        "_ability_score_increase": {
+            "Charisma": 1
+        },
+        "_age": {
+            "maturity": 20,
+            "maximum": 150
+        },
+        "size": "Small",
+        "speed": 25,
+        "languages": [
+            "Common",
+            "Halfling"
+        ],
+        "traits": [
+            "Naturally Stealthy",
+            "Lucky",
+            "Brave",
+            "Halfling Nimbleness"
+        ],
+        "subraces": null
+    },
+    "Stout Halfling": {
+        "title": "Stout Halfling",
+        "description": "Stout halflings are known for their resilience and tenacity. They tend to be more reserved and cautious than their more outgoing cousins, but they are no less adventurous. Stout halflings are often found in the company of dwarves, as they share a love of the good life and a distaste for goblins and other monsters.",
+        "_ability_score_increase": {
+            "Constitution": 1
+        },
+        "_age": {
+            "maturity": 20,
+            "maximum": 150
+        },
+        "size": "Small",
+        "speed": 25,
+        "languages": [
+            "Common",
+            "Halfling"
+        ],
+        "traits": [
+            "Naturally Stealthy",
+            "Lucky",
+            "Brave",
+            "Halfling Nimbleness"
+        ],
+        "subraces": null
+    },
+    "Tinkerton Gnome": {
+        "title": "Tinkerton Gnome",
+        "description": "Tinkerton gnomes are known for their inventiveness and creativity. They are native to the gnomish capitol of Tinkerton and tend towards a more solitary lifestyle than their forest cousins. They are rarely seen without a small toolbox or bag of tools. And can often be found performing a spectacular demonstration of their latest feat of engineering.",
+        "_ability_score_increase": {
+            "Intelligence": 1
+        },
+        "_age": {
+            "maturity": 40,
+            "maximum": 500
+        },
+        "size": "Small",
+        "speed": 25,
+        "languages": [
+            "Common",
+            "Gnomish"
+        ],
+        "traits": [
+            "Darkvision",
+            "Gnome Cunning"
+        ],
+        "subraces": null
+    },
+    "Forest Gnome": {
+        "title": "Forest Gnome",
+        "description": "Forest gnomes are known for their love of nature and their ability to blend into the natural surroundings. They are often found in the company of druids and rangers, and they love to tell stories about the fey creatures they encounter in the wilds.",
+        "_ability_score_increase": {
+            "Dexterity": 1
+        },
+        "_age": {
+            "maturity": 40,
+            "maximum": 500
+        },
+        "size": "Small",
+        "speed": 25,
+        "languages": [
+            "Common",
+            "Gnomish"
+        ],
+        "traits": [
+            "Darkvision",
+            "Gnome Cunning"
+        ],
+        "subraces": null
+    },
+    "High Elf": {
+        "title": "High Elf",
+        "description": "High elves are known for their grace, beauty, and magical prowess. They tend to have a strongsense of superiority and disdain for those who are not elves. They are often found in the  halls of non-elf elites and nobles as confidants and advisors.",
+        "_ability_score_increase": {
+            "Charisma": 1,
+            "Intelligence": 1,
+            "Wisdom": 1,
+            "Strength": -1,
+            "Constitution": -1
+        },
+        "_age": {
+            "maturity": 100,
+            "maximum": 750
+        },
+        "size": "Medium",
+        "speed": 30,
+        "languages": [
+            "Common",
+            "Elvish"
+        ],
+        "traits": [
+            "Darkvision",
+            "Fey Ancestry",
+            "Trance",
+            "Cantrip",
+            "Extra Language"
+        ],
+        "subraces": null
+    },
+    "Wood Elf": {
+        "title": "Wood Elf",
+        "description": "Wood elves are known for their nimble agility and inseparable connection to nature. They are often found in the role of rangers, druids, and other nature-based professions. They are rarely seen when unintended and cannot contained without the use of magic or force for very long. If you see a wood elf, it's because they want you to see them.",
+        "_ability_score_increase": {
+            "Wisdom": 1,
+            "Dexterity": 1,
+            "Constitution": -1,
+            "Strength": -1
+        },
+        "_age": {
+            "maturity": 100,
+            "maximum": 750
+        },
+        "size": "Medium",
+        "speed": 35,
+        "languages": [
+            "Common",
+            "Elvish"
+        ],
+        "traits": [
+            "Darkvision",
+            "Fey Ancestry",
+            "Mask of the Wild",
+            "Cantrip",
+            "Extra Language"
+        ],
+        "subraces": null
+    },
+    "Dark Elf": {
+        "title": "Drow",
+        "description": "Drow are known for their grace, beauty, and magical prowess. They are often found in the company of others, and they love to laugh and tell jokes.",
+        "_ability_score_increase": {
+            "Charisma": 1
+        },
+        "_age": {
+            "maturity": 100,
+            "maximum": 750
+        },
+        "size": "Medium",
+        "speed": 30,
+        "languages": [
+            "Common",
+            "Elvish"
+        ],
+        "traits": [
+            "Darkvision",
+            "Fey Ancestry",
+            "Drow Magic",
+            "Superior Darkvision",
+            "Sunlight Sensitivity"
+        ],
+        "subraces": null
+    },
+    "Mountain Dwarf": {
+        "title": "Mountain Dwarf",
+        "description": "Mountain dwarves are known for their resilience and tenacity. They are often found in the company of others, and they love to laugh and tell jokes.",
+        "_ability_score_increase": {
+            "Strength": 2
+        },
+        "_age": {
+            "maturity": 50,
+            "maximum": 350
+        },
+        "size": "Medium",
+        "speed": 25,
+        "languages": [
+            "Common",
+            "Dwarvish"
+        ],
+        "traits": [
+            "Darkvision",
+            "Dwarven Resilience",
+            "Dwarven Combat Training",
+            "Tool Proficiency",
+            "Stonecunning"
+        ],
+        "subraces": null
+    },
+    "Hill Dwarf": {
+        "title": "Hill Dwarf",
+        "description": "Hill dwarves are known for their resilience and tenacity. They are often found in the company of others, and they love to laugh and tell jokes.",
+        "_ability_score_increase": {
+            "Wisdom": 1
+        },
+        "_age": {
+            "maturity": 50,
+            "maximum": 350
+        },
+        "size": "Medium",
+        "speed": 25,
+        "languages": [
+            "Common",
+            "Dwarvish"
+        ],
+        "traits": [
+            "Darkvision",
+            "Dwarven Resilience",
+            "Dwarven Combat Training",
+            "Tool Proficiency",
+            "Stonecunning"
+        ],
+        "subraces": null
+    }
+}

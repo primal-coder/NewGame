@@ -1,5 +1,5 @@
-from src.components.window import *
-from src.game.scenes.scene1 import *
+#from build.game.scenes.scene01 import *
+from src.components.map.map import *
 
 game = MainWindow(dev_mode)
 

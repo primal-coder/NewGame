@@ -1,0 +1,92 @@
+{
+    "Acrobatics": {
+        "description": "Maneuvering your body through the air and over obstacles without the need for strenuous effort. Stability improves with higher scores.",
+        "ability": "Dexterity",
+        "proficient": false
+    },
+    "Animal Handling": {
+        "description": "Strong relationship with animals, both wild and domestic. From taming beasts to training mounts to understanding the behavior of animals.",
+        "ability": "Wisdom",
+        "proficient": false
+    },
+    "Arcana": {
+        "description": "A depth of knowledge about the magical forces that underlie the universe and the creatures that inhabit it. Including the knowledge of spells, magic items, eldritch symbols, magical traditions, the planes of existence, and the inhabitants of those planes.",
+        "ability": "Intelligence",
+        "proficient": false
+    },
+    "Athletics": {
+        "description": "Physical prowess and competency in endeavors which demand physical strength, endurance and coordination",
+        "ability": "Strength",
+        "proficient": false
+    },
+    "Deception": {
+        "description": "Manipulation of others through misdirection, trickery, falsehoods, disguise, seduction or other means.",
+        "ability": "Charisma",
+        "proficient": false
+    },
+    "History": {
+        "description": "A thorough understanding of historical facts. A knowledge of historical events, legendary people, ancient kingdoms, past disputes, recent wars, and lost civilizations.",
+        "ability": "Intelligence",
+        "proficient": false
+    },
+    "Insight": {
+        "description": "A sense of people's intentions and feelings. The ability to determine the true intentions of a creature, such as when searching out a lie or predicting someone's next move.",
+        "ability": "Wisdom",
+        "proficient": false
+    },
+    "Intimidation": {
+        "description": "Using threats, violence, and fear to influence others' behavior. The ability to influence someone through overt threats, hostile actions, and physical violence.",
+        "ability": "Charisma",
+        "proficient": false
+    },
+    "Investigation": {
+        "description": "Forensic approach to uncovering the truth and a dedicated consideration to the details of a situation, especially when searching for clues and answers.",
+        "ability": "Intelligence",
+        "proficient": false
+    },
+    "Medicine": {
+        "description": "Diagnostics and treatment of injuries and afflictions. General knowledge of anatomy, physiology, and common diseases and the application of a variety of conventional medical techniques.",
+        "ability": "Wisdom",
+        "proficient": false
+    },
+    "Nature": {
+        "description": "Knowledge of the natural world and the creatures that inhabit it. A thorough understanding of plants and animals, the weather and the terrain, and the way these factors interact.",
+        "ability": "Intelligence",
+        "proficient": false
+    },
+    "Perception": {
+        "description": "Awareness of surroundings and the ability to notice details. The ability to notice things that are not obvious or to make deductions based on those things you do notice.",
+        "ability": "Wisdom",
+        "proficient": false
+    },
+    "Performance": {
+        "description": "Entertaining an audience through acting, dancing, singing, storytelling, or some other form of performance. The ability to delight an audience with music, dance, acting, storytelling, or some other form of entertainment.",
+        "ability": "Charisma",
+        "proficient": false
+    },
+    "Persuasion": {
+        "description": "Influencing others through reasoning or the use of compelling arguments. The ability to influence others or a group of people to do something or to believe something, usually through the use of reasoning and good argument.",
+        "ability": "Charisma",
+        "proficient": false
+    },
+    "Religion": {
+        "description": "Knowledge of the gods, rites, and rituals of a religion. A thorough understanding of the deities worshipped, religious practices, holy days, rites of passage, religious hierarchies, and the underlying principles of a religion.",
+        "ability": "Intelligence",
+        "proficient": false
+    },
+    "Sleight of Hand": {
+        "description": "Prestidigitation and manual dexterity. The ability to perform sleight of hand tricks such as palming objects, hiding small objects on your person, picking pockets, opening locked containers, and other types of manual trickery.",
+        "ability": "Dexterity",
+        "proficient": false
+    },
+    "Stealth": {
+        "description": "Concealment, camoflauge, and movement without being detected. The ability to move quietly and stealthily, hide from enemies, slip away without being noticed, and avoid being tracked by non-magical means.",
+        "ability": "Dexterity",
+        "proficient": false
+    },
+    "Survival": {
+        "description": "Knowledge of the wilds and how to survive in them. A thorough understanding of the natural world, including terrain, plants and animals, the weather, and natural cycles.",
+        "ability": "Wisdom",
+        "proficient": false
+    }
+}
