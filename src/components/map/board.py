@@ -11,6 +11,7 @@ from src.components.core.scene import *
 from src.components.core.turn import *
 from src.components.map.grid import Grid as _Grid, _TERRAIN_DICT
 from src.components.entity.actor.base_actor import _BaseActor
+
 # from src.components.player.actor._base_actor import _BaseActor
 
 _logging.basicConfig(level=_logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -18,7 +19,65 @@ _logging.basicConfig(level=_logging.INFO, format="%(asctime)s - %(levelname)s - 
 key = pyglet.window.key
 mouse = pyglet.window.mouse
 
-_board_values = {'cell_size': 10, 'grid_scale': 1, 'noise_scale': 270, 'noise_octaves': 38, 'noise_roughness': 1.4}
+_board_values = {'cell_size': 12, 'grid_scale': 1, 'noise_scale': 370, 'noise_octaves': 36, 'noise_roughness': 1.29}
+
+
+def _create_displacement_map(noise_texture, width, height):
+    grayscale_data = noise_texture.get_image_data().get_data('L')
+    scale_factor = 32.0
+    displacement_data = bytearray(width * height * 2)
+    for y in range(height):
+        for x in range(width):
+            grayscale_value = grayscale_data[y * width + x]
+            displacement = int(scale_factor * (grayscale_value / 255.0 - 0.5))
+            displacement_data[(y * width + x) * 2:(y * width + x) * 2 + 2] = displacement.to_bytes(2, 'little',
+                                                                                                   signed=True)
+    displacement_map = pyglet.image.ImageData(width, height, 'RGB', displacement_data)
+    return displacement_map
+
+
+def _create_distortion_shader(displacement_map):
+    vertex_shader = '''
+        #version 120
+
+        varying vec2 v_texcoord;
+        uniform mat4 gl_ModelViewProjectionMatrix;
+        uniform vec2 displacement_factor;
+
+        void main() {
+            gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+            v_texcoord = gl_MultiTexCoord0.xy + displacement_factor * texture2D(gl_TextureMatrix[0], gl_MultiTexCoord0.xy).rg;
+        }
+    '''
+    fragment_shader = '''
+        #version 120
+
+        varying vec2 v_texcoord;
+        uniform sampler2D texture;
+
+        void main() {
+            vec2 texcoord = v_texcoord;
+            texcoord.x = 1.0 - texcoord.x;
+            gl_FragColor = texture2D(texture, texcoord);
+        }
+    '''
+
+    program = pyglet.graphics.shader.ShaderProgram(
+        vertex_shader,
+        fragment_shader
+    )
+    program.bind()
+
+    # Set the displacement map texture
+    glActiveTexture(GL_TEXTURE1)
+    glBindTexture(displacement_map.target, displacement_map.id)
+    glUniform1i(program.uniforms['displacement_map'], 1)
+
+    # Set the displacement and scale factors
+    program.uniforms['displacement_factor'] = (0.01, 0.02)
+    program.uniforms['scale_factor'] = (0.005,)
+
+    return program
 
 
 class Board(Scene):
@@ -47,8 +106,76 @@ class Board(Scene):
         self.dirty_flag = True
         self.vertices = []
         self.selected_cell = None
-        self.turn = Turn(self.window, self.character, self.enemy)
+        self.transitioning = False
+        self.turn_manager = TurnManager(self.window, self.character, self.enemy)
 
+    def take_screenshot(self):
+        pyglet.image.get_buffer_manager().get_color_buffer().save('screen.png')
+
+    def load_screen_image(self):
+        return pyglet.image.load('screen.png')
+
+    def _create_noise_texture(self, width, height):
+        data = bytearray(width * height * 3)
+
+        gradient_vectors = []
+        for i in range(256):
+            x = random.uniform(-1, 1)
+            y = random.uniform(-1, 1)
+            gradient_vectors.append((x, y))
+
+        scale = 16
+        for y in range(height):
+            for x in range(width):
+                cell_x = int(x / scale)
+                cell_y = int(y / scale)
+
+                corner_indices = [
+                    (cell_y * 256 + (cell_x + 1)) % 256,
+                    ((cell_y + 1) * 256 + (cell_x + 1)) % 256,
+                    ((cell_y + 1) * 256 + cell_x) % 256,
+                    (cell_y * 256 + cell_x) % 256
+                ]
+
+                corner_dist_vectors = [
+                    (x - (cell_x + 1)) * scale + gradient_vectors[corner_indices[0]][0],
+                    (y - cell_y) * scale + gradient_vectors[corner_indices[1]][1],
+                    (x - cell_x) * scale + gradient_vectors[corner_indices[2]][0],
+                    (y - (cell_y + 1)) * scale + gradient_vectors[corner_indices[3]][1]
+
+                ]
+
+                dot_products = []
+                for i in range(4):
+                    dot_products.append(corner_dist_vectors[i] * gradient_vectors[corner_indices[i]][0] +
+                                        corner_dist_vectors[i] * gradient_vectors[corner_indices[i]][1])
+
+                u = x / scale - cell_x
+                v = y / scale - cell_y
+                noise = (1 - u) * (1 - v) * dot_products[0] + u * (1 - v) * dot_products[1] + u * v * dot_products[
+                    2] + (1 - u) * v * dot_products[3]
+                noise = (noise / 2.0 + 0.5) * 255
+                noise = max(min(noise, 255), 0)
+
+                base_index = (y * width + x) * 3
+                data[base_index] = int(noise)
+                data[base_index + 1] = int(noise)
+                data[base_index + 2] = int(noise)
+
+        image_data = pyglet.image.ImageData(width, height, 'RGB', bytes(data))
+        noise_texture = image_data.create_texture(pyglet.image.Texture)
+        return noise_texture, width, height
+
+    def _transition_animation(self):
+        self.take_screenshot()
+        setattr(self, 'screenshot_image', self.load_screen_image())
+
+        noise_texture, width, height = self._create_noise_texture(self.screenshot_image.width,
+                                                                  self.screenshot_image.height)
+        displacement_map = _create_displacement_map(noise_texture, width, height)
+
+        setattr(self, 'screen_sprite', pyglet.sprite.Sprite(self.screenshot_image))
+        self.screen_sprite.shader = _create_distortion_shader(displacement_map)
 
     def is_within_board(self, x, y):
         return self.board_left < x < self.board_right and self.board_bottom < y < self.board_top
@@ -71,21 +198,39 @@ class Board(Scene):
 
     def next_turn(self):
         _logging.info('Next Turn...')
-        turn, actor = self.turn.next_turn()
-        _logging.info(f'Current Turn: {turn} - Current Actor: {actor.name}(lvl {actor.level})')
-        self.turn.set_current_turn(turn)
-        self.turn.set_current_actor(actor)
+        self.turn_manager.next_turn()
+        self.turn_manager.get_current_actor()._movements = 10
+        _logging.info(f'Current Actor: {self.turn_manager.get_current_actor().name}')
 
+    def enemy_move(self):
+        _logging.info('Enemy Move...')
+        self.turn_manager.get_current_actor()._get_path_to(self.character._cell_name)
+        self.turn_manager.get_current_actor()._set_traveling(True)
+
+    def enemy_turn(self):
+        if not self.enemy._path:
+            self.enemy_move()
+        if not self.enemy._movements:
+            self.enemy._path = []
+            self.next_turn()
+        if self.enemy._cell_name == self.character._cell_name:
+            self.transitioning = True
 
     def recv_mouse_press(self, x, y, btn, modifiers):
-        if self.is_within_board(x, y) and btn == mouse.LEFT:
-            self.selected_cell = self.board.get_cell_by_position(x, y)
-            if self.selected_cell is not None:
-                _logging.info(f'Left click @ {x}, {y} - {self.selected_cell.designation}')
-                self.character._get_path_to(self.selected_cell.designation)
-                self.character._set_traveling(True)
-            else:
-                _logging.info(f'Left click @ {x}, {y} - None')
+        if btn == mouse.LEFT:
+            _logging.info(f'Left click @ {x}, {y}')
+            x_ = int((x - self.board_left) / self.zoom_scale) - self.pan_dx
+            y_ = int((y - self.board_bottom) / self.zoom_scale) - self.pan_dy
+            if (x, y) != (x_, y_):
+                _logging.info(f'Translated left click to {x_}, {y_}')
+                if self.is_within_board(x_, y_):
+                    self.selected_cell = self.board.get_cell_by_position(x_, y_)
+                    if self.selected_cell is not None:
+                        _logging.info(f'Selected cell: {self.selected_cell.designation}')
+                        self.character._get_path_to(self.selected_cell.designation)
+                        self.character._set_traveling(True)
+                    else:
+                        _logging.info(f'Left click @ {x}, {y} - None')
         return super().recv_mouse_press(x, y, btn, modifiers)
 
     def recv_key_release(self, symbol, modifiers):
@@ -118,10 +263,10 @@ class Board(Scene):
             self.deactivate()
             self.window.activate_scene('Sheet')
         if symbol == key.SPACE:
-            if self.turn.get_current_actor() == self.character:
+            if self.turn_manager.get_current_actor() == self.character:
                 self.next_turn()
         return super().recv_key_press(symbol, modifiers)
-    
+
     def calculate_vertices(self, x, y):
         x += self.center_x - self.prev_x
         y += self.center_y - self.prev_y
@@ -187,7 +332,7 @@ class Board(Scene):
                     pyglet.gl.glVertex2f(vertex_list[i + 4], vertex_list[i + 5])
                     pyglet.gl.glVertex2f(vertex_list[i + 6], vertex_list[i + 7])
                 pyglet.gl.glEnd()
-        
+
         # Draw the character
         pos = self.character._position
         x, y = pos[0], pos[1]
@@ -236,30 +381,24 @@ class Board(Scene):
                 pyglet.gl.glVertex2f(verts[4], verts[5])
                 pyglet.gl.glVertex2f(verts[6], verts[7])
                 pyglet.gl.glEnd()
-        
 
         pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
         pyglet.gl.glPopMatrix()
         pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
 
-    def enemy_move(self):
-        if self.board.get_distance(self.character.cell.designation, self.enemy.cell.designation, 'cells') <= 10:
-            self.enemy.get_path_to(self.character.cell.designation)
-            self.enemy._traveling = True
-        return self.enemy._traveling
-
-    def update_enemy(self):
-        if self.turn.current_actor == self.enemy:
-            if self.enemy._movements:
-                if not self.enemy_move():
-                    self.next_turn()
-
     def refresh(self, dt):
         self.update_center()
         self.update_board_edges()
         self.character._update()
-        self.update_enemy()
+        if self.turn_manager.current_actor == self.enemy:
+            self.enemy_turn()
+        self.enemy._update()
+        if self.transitioning:
+            self._transition_animation()
 
     def render(self):
         self.draw_objects()
-        #self.draw_character()
+        if self.transitioning:
+            self.screen_sprite.draw()
+
+        # self.draw_character()

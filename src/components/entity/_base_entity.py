@@ -5,7 +5,7 @@ from typing import Optional as _Optional
 from src.components.map.grid import Grid as _Grid
 
 class BaseEntity(_EventDispatcher):
-    """Base class for all entity in the game. The BaseEntity is assumed to exist on a _grid, and
+    """Base class for all entities in the game. The BaseEntity is assumed to exist on a _grid, and
     has a _position, a name, and a _scale. The _scale is used to determine the size of the entity
     when it is drawn on the screen. The _scale is a tuple of two integers, the first being the
     _width, and the second being the _height. The _position is a tuple of two integers, the first
@@ -17,8 +17,8 @@ class BaseEntity(_EventDispatcher):
     class, which allows it to dispatch events. The BaseEntity class has the following events:
         
         on_occupy: Dispatched by the entity before it occupies a _cell. The event handler
-        should take one argument, the entity that is occupying the _cell. The event handler
-        should be a method of the _cell that the entity is occupying(`recv_occupant(occupant)`).
+        should take one argument, the entity that is going to occupy the _cell. The event handler
+        should be a method of the _cell that the entity is attempting to occupy(`recv_occupant(occupant)`).
         
         on_vacate: Dispatched by the entity when it vacates a _cell. The event handler should 
         take one argument, the entity that is vacating the _cell. The event handler should be a
@@ -107,10 +107,10 @@ class BaseEntity(_EventDispatcher):
             self._cell = cell_to_occupy
             self._cell_name = self._cell.designation
             self._push_handlers(on_vacate=self._cell.recv_occupant)
-            self._dispatch_event('on_occupy', self)
+            self._dispatch_event('on_occupy', self._cell)
             self._last_cell = None
         self._position = self._cell.coordinates
-        self._dispatch_event('on_occupy', self)
+        self._dispatch_event('on_occupy', self._cell)
 
 class Entity(BaseEntity):
     def __init__(self, scene, name):

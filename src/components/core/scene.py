@@ -1,6 +1,7 @@
 from src.components.core.window import *
 
-import pyglet.event
+from .event import EventDispatcher
+
 import pyglet.graphics
 
 import pymunk
@@ -20,8 +21,10 @@ HANDLERS = {
 }
 
 
-class Scene(pyglet.event.EventDispatcher):
-    """A scene is a collection of elements that can be rendered and updated.
+class Scene(EventDispatcher):
+    """
+    A scene is a collection of elements that are rendered and updated together. The Scene class inherits from
+    EventDispatcher, which allows it to receive events from the Window class.
     """
     def __init__(
             self,

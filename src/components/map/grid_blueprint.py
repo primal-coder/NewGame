@@ -449,11 +449,14 @@ class GridBlueprint:
             graph[cell] = [adj for adj in info['adjacent']]
         _logging.info('Success.')
         return graph
+    
+    def _update(self):
+        save_grid(self._grid_dictionary, '001GRID.json')
 
 
 def save_grid(dict_obj, file_path):
     with open(file_path, 'w') as file:
-        _json.dump(dict_obj, file)
+        _json.dump(dict_obj.__json__(), file)
 
 
 def load_grid(file_path: _Optional[str] = None):

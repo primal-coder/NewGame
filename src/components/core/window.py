@@ -1,17 +1,9 @@
+# %%
+from abc import ABC
 import contextlib
-import pyglet
-import pyglet.window
-import pyglet.clock
-import pyglet.graphics
-from pyglet.gl import *
 from subprocess import call
-
-key = pyglet.window.key
-mouse = pyglet.window.mouse
-
-
-def clear():
-    call("clear")
+import pyglet
+from pyglet.window import key, mouse
 
 
 class Mode:
@@ -21,18 +13,33 @@ class Mode:
     """
 
     # Usage:
-    # gameMode = Mode
-    #("Death-match")
+    # gameMode = Mode('Dev')
     def __init__(self, title: str) -> None:
         self.title = title
 
 
-dev_mode = Mode("Dev")
-test_mode = Mode("Test")
+dev_mode = Mode('Dev')
+test_mode = Mode('Test')
 
 
 class MainWindow(pyglet.window.Window):
-    def __init__(self, mode: Mode):
+    """ 
+    This class is derived from the pyglet.window.Window class and the abc.ABC metaclass. 
+    It initializes the game window and register the events to be used. 
+    It has various methods for handling user inputs and rendering the game. 
+    The run() method runs the game loop until the user quits the game.
+    """
+    def __init__(self, mode: Mode) -> None:
+        """
+        Initializes the game window and register the events to be used.
+        Sets up various attributes for handling user inputs and rendering the game.
+        
+        Args:
+            mode (Mode): The mode of the game.
+            
+        Returns:
+            None
+            """
         self.mode = mode
         super(MainWindow, self).__init__(fullscreen=True)
         self.register_event_type('on_activate')
@@ -54,59 +61,94 @@ class MainWindow(pyglet.window.Window):
         self.active = True
         self.set_clock()
 
-    def set_clock(self):
+    def set_clock(self) -> None:
+        """Schedules the game loop to run at the fps specified during init."""
         self.clock.schedule_interval(self.cycle, self.fps)
 
-    def deactivate_scene(self):
+    def deactivate_scene(self) -> None:
+        """Dispatches the 'on_deactivate' event."""
         self.dispatch_event('on_deactivate')
 
-    def activate_scene(self, scene_title):
+    def activate_scene(self, scene_title: str) -> None:
+        """Dispatches the 'on_activate' event."""
         self.dispatch_event('on_activate', scene_title)
 
-    def reactivate_scene(self):
+    def reactivate_scene(self) -> None:
+        """Dispatches the 'on_reactivate' event."""
         self.dispatch_event('on_reactivate')
 
-    def on_mouse_motion(self, x, y, dx, dy):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> None:
+        """
+        Sets the mouse position when it is moved
+        
+        Args:
+            x (int): The x coordinate of the mouse.
+            y (int): The y coordinate of the mouse.
+            dx (int): The change in x coordinate of the mouse.
+            dy (int): The change in y coordinate of the mouse.
+
+        Returns:
+            None
+        """
         self.mouse_x = x
         self.mouse_y = y
 
-    def on_mouse_press(self, x, y, btn, modifiers):
+    def on_mouse_press(self, x: int, y: int, btn: int, modifiers: int) -> None:
+        """
+        Handles the mouse press event.
+        
+        Args:
+            x (int): The x coordinate of the mouse.
+            y (int): The y coordinate of the mouse.
+            btn (int): The button pressed.
+            modifiers (int): The modifiers pressed.
+            
+        Returns:
+            None
+        """
         pass
 
-    def on_mouse_release(self, x, y, btn, modifiers):
+    def on_mouse_release(self, x: int, y: int, btn: int, modifiers: int) -> None:
+        """Handles the mouse release event."""
         pass
 
-    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, btn: int, modifiers: int) -> None:
+        """Handles the mouse drag event."""
         self.mouse_dx = dx
         self.mouse_dy = dy
-        
-    def on_key_release(self, symbol, modifiers):
+
+    def on_key_release(self, symbol: int, modifiers: int) -> None:
         with contextlib.suppress(Exception):
             del self.keys_[symbol]
-            
 
-    def on_key_press(self, symbol, modifiers):
+    def on_key_press(self, symbol: int, modifiers: int) -> None:
         self.keys_[symbol] = True
         if symbol == key.ESCAPE:
             self.active = False
         super(MainWindow, self).on_key_press(symbol, modifiers)
 
-    def refresh(self, dt):
+    def refresh(self, dt: float) -> None:
+        """Flips the buffer and dispatches the 'on_refresh' event."""
         self.flip()
         self.dispatch_event('on_refresh', dt)
 
-    def render(self):
+    def render(self) -> None:
+        """Clears the screen and dispatches the 'on_render' event."""
         self.clear()
         self.dispatch_event('on_render')
         self.fps_display.draw()
 
-    def cycle(self, dt):
+    def cycle(self, dt: float) -> None:
+        """Calls the refresh and render methods and increments the frame count."""
         self.refresh(dt)
         self.render()
         self.frame_count += 1
 
-    def run(self):
+    def run(self) -> None:
+        """Runs the game loop until the user quits the game."""
         while self.active:
             self.clock.tick()
             self.dispatch_events()
         self.close()
+
+# %%

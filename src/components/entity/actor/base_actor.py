@@ -53,6 +53,9 @@ class _BaseActor(_DynamicEntity):
         self._initialize(role, race, age)
         self._shape = _shapes.Rectangle(self._x, self._y, 5, 5, color=(255, 0, 0))
 
+    def _on_turn_change(self):
+        pass
+
     def get_speed(self):
         return self.Dexterity.modifier
 

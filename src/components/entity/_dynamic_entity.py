@@ -15,7 +15,6 @@ class DynamicEntity(_BaseEntity):
         self._movements = 10
         self._register_event_type('on_move')
         self._push_handlers(on_move=self._grid.on_move)
-        self._push_handlers(on_occupy=self._cell.on_occupy, on_vacate=self._cell.on_vacate)
         self.occupy(self._cell)
 
     def _set_traveling(self, value):

@@ -1,5 +1,7 @@
-class Turn:
-    """Turn class
+from .event import EventDispatcher
+
+class TurnManager(EventDispatcher):
+    """TurnManager class
     
     This class is used to manage the turn order of the game. It is used to
     determine which actor is currently active and which actor is next in line.
@@ -39,28 +41,31 @@ class Turn:
         reset: Resets the turn manager.
         
         """
-    def __init__(self, window, first_player=None, second_player=None):
+    def __init__(self, window, first_player=None, second_player=None, length = 10000):
+        super(TurnManager, self).__init__()
+        self._register_event_type('on_turn_change')
         self.window = window
-        self.current_turn = 0
+        self.current_turn_number = 0
         self.current_actor = None
         self.actor_list = []
         self.turn_queue = []
         self.turn_queue_index = 0
-        self.turn_queue_length = 0
+        self.turn_queue_length = length
         self.turn_queue_dirty = False
         self.turn_queue_sorted = False
+        self.turn_history = []
         self.add_actor(first_player)
         self.add_actor(second_player)
         self.create_queue()
         self.set_current_actor(self.turn_queue[0])
-        self.set_current_turn(0)
-        self.sort_turn_queue()
+        self.set_current_turn_number(0)
+        self.current_turn = Turn(self.current_turn_number, self.current_actor)
+        self._set_handler('on_turn_change', self.current_actor._on_turn_change)
 
     def create_queue(self):
-        self.turn_queue = self.actor_list
-        self.turn_queue_length = len(self.turn_queue)
+        self.turn_queue = self.actor_list * (self.turn_queue_length//len(self.actor_list))
         self.turn_queue_dirty = True
-        self.turn_queue_sorted = False
+        self.turn_queue_sorted = True
 
     def add_actor(self, actor):
         self.actor_list.append(actor)
@@ -76,8 +81,8 @@ class Turn:
     def get_current_actor(self):
         return self.current_actor
     
-    def get_current_turn(self):
-        return self.current_turn
+    def get_current_turn_number(self):
+        return self.current_turn_number
     
     def get_turn_queue(self):
         return self.turn_queue
@@ -97,8 +102,8 @@ class Turn:
     def set_current_actor(self, actor):
         self.current_actor = actor
 
-    def set_current_turn(self, turn):
-        self.current_turn = turn
+    def set_current_turn_number(self, turn):
+        self.current_turn_number = turn
 
     def set_turn_queue(self, queue):
         self.turn_queue = queue
@@ -120,20 +125,27 @@ class Turn:
         self.turn_queue_sorted = True
 
     def next_turn(self):
-        if self.turn_queue_dirty:
-            self.sort_turn_queue()
-            self.turn_queue_dirty = False
+        self.turn_history.append(Turn(self.current_turn_number, self.current_actor))
         if self.turn_queue_index >= self.turn_queue_length:
-            self.current_turn += 1
             self.turn_queue_index = 0
+        else:
+            self.turn_queue_index += 1
+        self.current_turn_number += 1
         self.current_actor = self.turn_queue[self.turn_queue_index]
-        self.turn_queue_index += 1
+        self._dispatch_event('on_turn_change')
+        self._set_handler('on_turn_change', self.current_actor._on_turn_change)
 
     def reset(self):
-        self.current_turn = 0
+        self.current_turn_number = 0
         self.current_actor = None
         self.turn_queue = []
         self.turn_queue_index = 0
         self.turn_queue_length = 0
         self.turn_queue_dirty = False
         self.turn_queue_sorted = False
+
+class Turn:
+    def __init__(self, turn_number=None, current_actor=None):
+        self.turn_number = turn_number if turn_number is not None else 0
+        self.current_actor = current_actor if current_actor is not None else None
+        self.events = []

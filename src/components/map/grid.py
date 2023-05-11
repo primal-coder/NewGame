@@ -65,6 +65,18 @@ class GridGroup:
         else:
             _logging.info("_Cell not in group!")
 
+    def __json__(self):
+        """
+        Serializes the GridGroup object as a JSON object.
+        """
+        
+        cells_designations = [cell.designation for cell in self.cells]
+        return {
+            "title": self.title,
+            "cells": cells_designations,
+            "legacy": self.legacy
+        }
+
 
 class _AbstractGridObject:
     @abstractmethod
@@ -112,7 +124,7 @@ class Grid(_QuietDict):
         self.quadrants = None
         _logging.info('Setting up grid.')
         self._set_up()
-        _save_grid(self.grid_plan, '0001GRID.json')
+        _save_grid(self, '001GRID.json')
         self.selection = None
 
     def on_occupy(self, cell):
@@ -336,6 +348,7 @@ class Grid(_QuietDict):
     def _update(self):
         self._update_cells()
         self._update_lists()
+        _save_grid(self, '001GRID.json')
 
     def __json__(self):
         grid_dict = {}
@@ -347,8 +360,7 @@ class Grid(_QuietDict):
         
         cells_dict = {}
         for cell_designation, cell in self.cells.items():
-            entities = [entity.__json__() for entity in cell.entities]
-            cell_dict = {"quadrant": cell.quadrant, "quadrant_index": cell.quadrant_index, "entities": entities}
+            cell_dict = cell.__json__()
             cells_dict[cell_designation] = cell_dict
         
         grid_dict["cells"] = cells_dict
@@ -413,6 +425,7 @@ class _Cell(EventDispatcher):
     )
 
     _EVENT_TYPES = ['on_occupy', 'on_vacate', 'on_obstruct', 'on_destruct', 'on_entitle', 'on_divest']
+    _HANDLER_TYPES = ['occupy', 'vacate', 'obstruct', 'destruct', 'entitle', 'divest']
 
     def __repr__(self):
         return str(self.designation)
@@ -469,34 +482,22 @@ class _Cell(EventDispatcher):
 
         for key, val in self.entry.items():
             if key not in [k for k in self.entry][:7]:
-                exec(f'self.{key} = {val}')
+                setattr(self, key, val)
 
         for event in self._EVENT_TYPES:
             self._register_event_type(event)
 
         self.neighborhood = _Neighborhood
-
+        
     def recv_occupant(self, occupant):
         if self.occupant is not None:
             if self.occupant == occupant:
-                self.occupant = None
-                self.occupied = False
+                self._dispatch_event('on_vacate')
                 return
             return
-        self.occupant = occupant
-        self.occupied = True
+        self._dispatch_event('on_occupy', occupant)
         return
                 
-                
-
-    def _determine_shape(self):
-        """Determine the shape of the cell by assessing the adjacent cells, if an in a horizontally or vertically
-        adjacent cell has the same terrain as this cell, the vertices of this cell will be used to expand the shape
-        of a continuous terrain."""
-        self.adjacent_terrain = []
-        for cell in self.adjacent:
-            self.adjacent_terrain.append(cell.terrain_str)
-
     def _set_quadrant(self):
         for quadrant in self.parentgrid.quadrants:
             if self.designation in quadrant['cells']:
@@ -513,7 +514,6 @@ class _Cell(EventDispatcher):
         self.entitled = False
         self.entity = None
         self.title = None
-        self._dispatch_event('on_divest')
 
     def on_occupy(self, occupant):
         self.occupant = occupant
@@ -527,10 +527,8 @@ class _Cell(EventDispatcher):
         self.passable = False
         self.obstructed = True
         self.obstruction = obstruction
-        self._dispatch_event('on_obstruct', self, obstruction)
 
     def on_destruct(self):
-        self._dispatch_event('on_destruct', self, self.obstruction)
         self.passable = True
         self.obstructed = False
         self.obstruction = None
@@ -559,23 +557,18 @@ class _Cell(EventDispatcher):
     def refresh(self):
         self.parentgrid._blueprint._grid_dictionary[self.designation] = self.entry
 
+    def __json__(self):
+        return {
+            "designation": self.designation,
+            "coordinates": self.coordinates,
+            "adjacent": self.adjacent,
+            "occupied": self.occupied,
+            "obstructed": self.obstructed,
+            "entitled": self.entitled,
+            "groups": [group.__json__() for group in self.groups.values()]
+        }
 
-#     def draw(self):
-#         self.tile.draw()
 
-# class _TerrainTile:
-#     def __init__(self, cell):
-#         self.x = GRID_DICT[cell.designation]['coordinates'][0]
-#         self.y = GRID_DICT[cell.designation]['coordinates'][1]
-#         self.terrain_int = GRID_DICT[cell.designation]['terrain_int']
-
-#         self.terrain_type = _TERRAIN_TYPES[self.terrain_int]
-#         self.color = _COLORS[self.terrain_int]
-#         self.shape = _pyglet.shapes.Rectangle(self.x, self.y, 25, 25, self.color)
-
-#     def draw(self):
-#         if self.shape is not None:
-#             self.shape.draw()
 
 
 class _Neighborhood:

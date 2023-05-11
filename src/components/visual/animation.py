@@ -1,13 +1,14 @@
-from build.screen.actors.element import *
-from build.screen.actors.state import *
+from typing import Optional as _Optional
+from .element import *
+from .state import *
 
 
 class AnimatedElement:
     def __init__(
             self,
-            parent: Optional[object] = None,
-            layer: Optional[int] = None,
-            position: Optional[tuple[int, int]] = None,
+            parent: _Optional[object] = None,
+            layer: _Optional[int] = None,
+            position: _Optional[tuple[int, int]] = None,
             *args, **kwargs
     ):
         self.parent = parent
@@ -46,58 +47,3 @@ class AnimatedElement:
 
     def draw(self):
         self.state.draw()
-
-
-class PPlayerAnim(AnimatedElement):
-    def __init__(self, controller):
-        self.layer = BGLayer
-        self.x = controller.x
-        self.y = controller.y
-        super(PPlayerAnim, self).__init__(controller, self.layer, (self.x, self.y))
-
-    def init(self, **kwargs):
-        super().init([PIdle(self), PRun(self), PJump(self)])
-
-
-class APlayerAnim(AnimatedElement):
-    def __init__(self, controller):
-        self.layer = BGLayer
-        self.x = controller.x
-        self.y = controller.y
-        super(APlayerAnim, self).__init__(controller, self.layer, (self.x, self.y))
-
-    def init(self, **kwargs):
-        super().init([Actions(self)])
-
-
-class AHeroAnim(AnimatedElement):
-    def __init__(self, controller):
-        self.layer = BGLayer
-        self.x = controller.x
-        self.y = controller.y
-        super(AHeroAnim, self).__init__(controller, self.layer, (self.x, self.y))
-
-    def init(self, **kwargs):
-        super().init([AHeroStates(self)])
-
-
-class NewPlayerAnim(AnimatedElement):
-    def __init__(self, controller):
-        self.layer = BGLayer
-        self.x = controller.x
-        self.y = controller.y
-        super(NewPlayerAnim, self).__init__(controller, self.layer, (self.x, self.y))
-
-    def init(self, **kwargs):
-        super().init([NewPlayerIdle(self), NewPlayerRun(self)])
-
-
-class HorseAnim(AnimatedElement):
-    def __init__(self, controller):
-        self.layer = BGLayer
-        self.x = controller.x
-        self.y = controller.y
-        super(HorseAnim, self).__init__(controller, self.layer, (self.x, self.y))
-
-    def init(self, **kwargs):
-        super().init([HorseRun(self)])

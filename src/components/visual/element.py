@@ -7,9 +7,10 @@ import pyglet.graphics
 import pyglet.sprite
 import pyglet.event
 
-from src.components.visual.state import *
+from .state import *
 from src.components.core.scene import *
 from src.components.core.window import *
+from src.components.entity._base_entity import BaseEntity, Entity
 from typing import Optional as _Optional
 
 
@@ -18,6 +19,7 @@ class Element:
             self,
             window: _Optional[MainWindow],
             scene: _Optional[Scene],
+            parent: _Optional[BaseEntity] = None,
             name: _Optional[str] = None,
             static: _Optional[bool] = None,
             position: _Optional[tuple[int, int]] = None,
@@ -30,14 +32,21 @@ class Element:
     ):
         self.window = window
         self.scene = scene
+        self.parent = parent
         self.name = name if name is not None else ""
         self.static = static if static is not None else True
         if not self.static:
             self.dynamic = True
-        self.position = position if position is not None else (0, 0)
-        self.x = self.position[0]
-        self.y = self.position[1]
-        self.dimensions = dimensions if dimensions is not None else (0, 0)
+        if self.parent is not None:
+            self.position = self.parent._position
+            self.x = self.parent._x
+            self.y = self.parent._y
+            self.dimensions = (self.parent._width, self.parent._height)
+        else:
+            self.position = position if position is not None else (0, 0)
+            self.x = self.position[0]
+            self.y = self.position[1]
+            self.dimensions = dimensions if dimensions is not None else (0, 0)
         self.width = self.dimensions[0]
         self.height = self.dimensions[1]
         self.color = color if color is not None else (255, 255, 255, 255)
